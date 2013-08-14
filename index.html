@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style type='text/css'>
+            .def {
+                background-color: red;
+            }
+
+            div {
+                height: 20px;
+            }
+
+            .ghi {
+                background-color : blue ;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="abc">.abc</div>
+        <div class="abc ghi">.abc.ghi</div>
+        <div class="def">.def</div>
+        <script>
+            
+        var A
+        A = (function() {
+            var C = function ( ) {
+                this.name = "A"
+            }
+            C.constructor = A
+            C.prototype.constructor = A
+
+            C.prototype.extend = function( obj ) {
+                for( key in obj ) {
+                    C.prototype[ key ] = obj[ key ]
+                }
+                return this;
+            }
+            return new C();
+        })()
+
+        
+        B = function( query ) {
+            var O = function( query ) {
+                this.obj = typeof query == "string" ? document.querySelectorAll( query ) : query ;
+            }
+            O.constructor = O
+            O.prototype = A;
+
+            return new O( query );
+        }
+
+        A.extend({
+            _add : function( str ,  _class ) {
+                return this.hasClass(str, _class ) ? str : str + ' ' + _class
+            } 
+            , _remove : function( str ,  _class ) {
+                return str.replace( new RegExp( _class , 'g' ) , '')
+            }
+            , hasClass : function( str , _class ) {
+                var reg = new RegExp( _class , 'g' );
+                return reg.test(str);
+            }
+            , addClass : function( _class )
+            {
+                for( var i = 0 ; i < this.obj.length ; i ++  )
+                {
+                    this.obj[i].className =  this._add( this.obj[i].className , _class );
+                }
+                return this;
+            }
+            , removeClass : function( _class )
+            {
+                for( var i = 0; i < this.obj.length ; i ++ )
+                {
+                    this.obj[i].className = this._remove( this.obj[i].className , _class );
+                }
+                return this;
+            }
+            , toggleClass : function( _class ) {
+                for( var i = 0 ; i < this.obj.length ; i++ ) {
+                    this.obj[i].className = this.hasClass( this.obj[i].className , _class) ? this._remove( this.obj[i].className , _class) : this._add( this.obj[i].className , _class);
+                }
+            }
+        })
+        
+        B('.def').addClass('ghi').removeClass('def');
+        B('.abc').toggleClass('ghi');
+
+        </script>
+    </body>
+</html>
